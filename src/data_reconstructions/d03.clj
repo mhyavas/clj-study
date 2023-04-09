@@ -44,6 +44,8 @@
   ;=> [["name" "ali" "surname" "veli"] ["name" "batu" "surname" "can"]]
   ;q1-> İç köşeli parentezi süslü paranteze çeviremedim
   ; Array-map'e çevirmem için key tanımlama lazım ama çıktı olarak string istendiğinden yapamadım.
-  
+
+  (set (map reducer x))
+  ;=> #{["name" "batu" "surname" "can"] ["name" "ali" "surname" "veli"]}
   ;end
   )
