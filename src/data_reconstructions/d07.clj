@@ -31,12 +31,25 @@
   (x1 :surname)
   ;=> "veli"
   (.contains (x2 :surname) "ca")
+  ;=> true
+  (defn checker [m]
+    (.contains (m :surname) "ca")
+    )
   ;.contains fonksiyonunu bu link ile kesfettim
   ;https://stackoverflow.com/questions/26386766/check-if-string-contains-substring-in-clojure
-  
-  ;=> true
-
-
-  ;end
-  )
+  (map checker (vals x))
+  ;=> (false true)
+  (filter checker (vals x))
+  ;=> ({:id 2, :name "batu", :surname "can"})
+  (defn inner_func [m]
+    (array-map  (first (vals m)) m)
+    )
+  (inner_func {:id 2, :name "batu", :surname "can"})
+  ;=> {2 {:id 2, :name "batu", :surname "can"}}
+  (map inner_func (filter checker (vals x)))
+  ;=> ({2 {:id 2, :name "batu", :surname "can"}})
+  (reduce conj (map inner_func (filter checker (vals x))))
+  ;=> {2 {:id 2, :name "batu", :surname "can"}}
+     ;end
+     ,)
 
