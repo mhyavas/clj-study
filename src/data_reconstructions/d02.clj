@@ -1,6 +1,6 @@
 (ns data-reconstructions.d02
   (:require [clojure.string :as string]))
-
+; Tarih: 20230405
 (comment
   (def x [{:name "ali" :surname "veli"}
           {:name "batu" :surname "can"}])
@@ -14,9 +14,11 @@
   (string/join (vals x1))
   ;=> "aliveli"
 
-  (defn joiner [s]
+  (defn f [s]
     (string/join (vals s))
     )
+  (map f x)
+  ;=> ("aliveli" "batucan")
   (into [] (map joiner x))
   ;=> ["aliveli" "batucan"]
   ;end

@@ -1,4 +1,5 @@
 (ns data-reconstructions.d07)
+; Tarih: 20230410
 
 ;Bu problemde bir girdi veri var, bir de bir arama kriteri var.
 ;
@@ -32,23 +33,23 @@
   ;=> "veli"
   (.contains (x2 :surname) "ca")
   ;=> true
-  (defn checker [m]
+  (defn f [m]
     (.contains (m :surname) "ca")
     )
   ;.contains fonksiyonunu bu link ile kesfettim
   ;https://stackoverflow.com/questions/26386766/check-if-string-contains-substring-in-clojure
-  (map checker (vals x))
+  (map f (vals x))
   ;=> (false true)
-  (filter checker (vals x))
+  (filter f (vals x))
   ;=> ({:id 2, :name "batu", :surname "can"})
-  (defn inner_func [m]
+  (defn f1 [m]
     (array-map  (first (vals m)) m)
     )
-  (inner_func {:id 2, :name "batu", :surname "can"})
+  (f1 {:id 2, :name "batu", :surname "can"})
   ;=> {2 {:id 2, :name "batu", :surname "can"}}
-  (map inner_func (filter checker (vals x)))
+  (map f1 (filter f (vals x)))
   ;=> ({2 {:id 2, :name "batu", :surname "can"}})
-  (reduce conj (map inner_func (filter checker (vals x))))
+  (reduce conj (map f1 (filter f (vals x))))
   ;=> {2 {:id 2, :name "batu", :surname "can"}}
      ;end
      ,)

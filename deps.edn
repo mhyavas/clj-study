@@ -30,5 +30,9 @@
         clj-commons/clj-yaml {:mvn/version "0.7.0"}
         tick/tick {:mvn/version "RELEASE"}
         org.clojure/math.combinatorics {:mvn/version "0.1.6"}
-        metosin/reitit {:mvn/version "0.5.18"}},
+        metosin/reitit {:mvn/version "0.5.18"}
+        com.datomic/dev-local {:mvn/version "1.0.243"}
+        },
+ :mvn/repos {"cognitect-dev-tools"
+             {:url "https://dev-tools.cognitect.com/maven/releases/"}},
  :paths ["src"]}

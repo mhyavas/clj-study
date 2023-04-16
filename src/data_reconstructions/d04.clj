@@ -1,4 +1,5 @@
 (ns data-reconstructions.d04)
+; Tarih: 20230409
 
 ;
 ;Girdi:
@@ -26,6 +27,8 @@
   (defn inner_func [m]
     (into [] (vals m))
     )
+  (map inner_func x)
+  ;=> ([1 "ali" "veli"] [2 "batu" "can"])
   (into [] (map inner_func x))
   ;=> [[1 "ali" "veli"] [2 "batu" "can"]]
   ;end

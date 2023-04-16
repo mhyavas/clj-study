@@ -1,4 +1,6 @@
 (ns data-reconstructions.d01)
+;Tarih:20230405
+
 (comment
   ;girdi
   [{:name "ali" :surname "veli"}
@@ -19,9 +21,10 @@
   ;=> ("ali" "veli")
   (into [] (vals x1))
   ;=> ["ali" "veli"]
-  (defn vector_converter [v]
+  (defn f [v]
     (into [] (vals v)))
 
-  (into [] (map vector_converter x ))
+  (into [] (map f x ))
+  ;=> [["ali" "veli"] ["batu" "can"]]
   ;end
   ,)

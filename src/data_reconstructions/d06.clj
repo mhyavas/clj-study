@@ -1,4 +1,5 @@
 (ns data-reconstructions.d06)
+; Tarih: 20230409
 
 ;Girdi:
 ;
@@ -31,23 +32,23 @@
   (first (vals x1))
   (array-map  (first (vals x1)) (into [] (rest (vals x1))))
   ;=> {1 ["ali" "veli"]}
-  (defn inner_func [m]
+  (defn f [m]
     (array-map  (first (vals m)) (into [] (rest (vals m))))
     )
   (inner_func x1)
   ;=> {1 ["ali" "veli"]}
   (seq (vals x))
-  (apply array-map (map inner_func (seq (vals x))))
+  (apply array-map (map f (seq (vals x))))
   ;=> {{1 ["ali" "veli"]} {2 ["batu" "can"]}}
-  (reduce map (apply array-map (map inner_func (seq (vals x)))))
+  (reduce map (apply array-map (map f (seq (vals x)))))
   ;=> [{1 ["ali" "veli"]} {2 ["batu" "can"]}]
   (reduce conj [{1 ["ali" "veli"]} {2 ["batu" "can"]}])
   ;=> {1 ["ali" "veli"], 2 ["batu" "can"]}
 
-  (defn final_func [x]
-    (reduce map (apply array-map (map inner_func (seq (vals x)))))
+  (defn f1 [x]
+    (reduce map (apply array-map (map f (seq (vals x)))))
     )
-  (reduce conj (final_func x))
+  (reduce conj (f1 x))
   ;=> {1 ["ali" "veli"], 2 ["batu" "can"]}
 
 

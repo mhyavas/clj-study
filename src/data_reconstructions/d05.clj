@@ -1,4 +1,5 @@
 (ns data-reconstructions.d05)
+; Tarih: 20230409
 
 ;Girdi:
 ;
