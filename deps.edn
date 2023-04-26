@@ -32,6 +32,7 @@
         org.clojure/math.combinatorics {:mvn/version "0.1.6"}
         metosin/reitit {:mvn/version "0.5.18"}
         com.datomic/dev-local {:mvn/version "1.0.243"}
+        io.github.nextjournal/clerk {:mvn/version "0.13.842"}
         },
  :mvn/repos {"cognitect-dev-tools"
              {:url "https://dev-tools.cognitect.com/maven/releases/"}},
