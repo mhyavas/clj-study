@@ -54,13 +54,45 @@
   (map f5 x)
   ;=> ([1 "ali" "veli"] [2 "batu" "can"])
 
+  ;Code Review sonrasında alternatif çözüm çalışması
+
+  (def x2
+    [[1 "ali"] [1 "veli"]])
+  ;Istenilen output icin x1 mapini x2 objesine donusturmek gerekiyor.
+
+
+  (map identity x1)
+  ;=> ([:id 1] [:name "ali"] [:surname "veli"])
+  (map identity x)
+  ;=> ([1 {:id 1, :name "ali", :surname "veli"}]
+  ;    [2 {:id 2, :name "batu", :surname "can"}])
+
   (defn f6 [m]
-    (map #(if (.contains (vals %) "a")
-            true
-            false) m))
+    (into [(m :id)] (rest (vals m))))
 
-  (f6 x)
+  (defn f7 [m]
+    (let [id (m :id)
+          name (first (rest (vals m)))
+          last (second (rest (vals m)))]
+      (into [[id name]] [[id last]])))
 
+  (f7 x1)
+  ;=> [[1 "ali"] [1 "veli"]]
+  (map f7 (vals x))
+  ;=> ([[1 "ali"] [1 "veli"]] [[2 "batu"] [2 "can"]])
 
+  (map identity (map f7 (vals x)))
+  ;=> ([[1 "ali"] [1 "veli"]] [[2 "batu"] [2 "can"]])
+  (defn f8 [m]
+    (apply concat (map f7 (vals m)))
+    )
+  (f8 x)
+  ;=> ([1 "ali"] [1 "veli"] [2 "batu"] [2 "can"])
+  (filter (fn [t] (str/includes? (second t) "a")) (f8 x))
+  ;=> ([1 "ali"] [2 "batu"] [2 "can"])
+
+  (into [] (filter (fn [t] (str/includes? (second t) "a")) (f8 x)))
+  ;=> [[1 "ali"] [2 "batu"] [2 "can"]]
+  
   ;end
   )
