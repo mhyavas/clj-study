@@ -93,6 +93,6 @@
 
   (into [] (filter (fn [t] (str/includes? (second t) "a")) (f8 x)))
   ;=> [[1 "ali"] [2 "batu"] [2 "can"]]
-  
+
   ;end
   )
