@@ -31,7 +31,18 @@
   (update-in foo [:bar :baz :quux ] inc)
   ;=> {:bar {:baz {:quux 124}}}
 
+  (defn seq->map
+    [s]
+    (let [s+ (concat s [nil])]
+      (zipmap
+        (take-nth 2 s+)
+        (take-nth 2 (rest s+)))))
 
+  (defn to-map [v]
+    (apply hash-map
+           (if (odd? (count v))
+             (conj v nil)
+             v)))
 
 
 

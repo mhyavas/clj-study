@@ -6,7 +6,7 @@
 (clerk/serve! {:browse? true})
 
 (clerk/show! "src/clerk_study/n1.clj")
-
+(clerk/show! "src/clerk_study/registration.clj")
 ;; or let Clerk watch the given `:paths` for changes
 (clerk/serve! {:watch-paths ["src/clerk_study" "src"]})
 
