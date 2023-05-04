@@ -26,8 +26,8 @@
     :db/valueType :db.type/tuple
     :db/cardinality :db.cardinality/one}
    ])
-;rfr: https://docs.datomic.com/pro/schema/schema.html
-
+; [rfr](https://docs.datomic.com/pro/schema/schema.html)
+^{::clerk/visibility {:code :hide}}
 (def schema-2
   [{ :db/ident :id
    :db/valueType :db.type/long
@@ -38,6 +38,7 @@
     :db/cardinality :db.cardinality/one}
    {:db/ident :department/id
     :db/valueType :db.type/tuple
+    :db/tupleAttrs  []
     :db/cardinality :db.cardinality/one}
    ])
 (def db
@@ -56,10 +57,10 @@
     m))
 ^{::clerk/visibility {:code :hide}}
 (def st {:id [] :name [] :department/id []})
-;Student record table
+; ### Student record table
 ^{::clerk/visibility {:code :hide}}
 (clerk/table st)
-;Student registration form
+; ### Student registration form
 (def form1 {:id 1 :name "Can Ali" :department/id 101})
 (def form2 {:id 2 :name "Ali Deniz" :department/id 102})
 
@@ -101,3 +102,12 @@
 
 #_(d/transact conn {:tx-data schema-2})
 ;:db.error/invalid-install-attribute First error: :db.error/invalid-tuple-kind
+#_(d/transact conn {:tx-data schema-2})
+;:db.error/invalid-tuple-value Invalid tuple value
+
+;İlk hata     :db/tupleAttrs  [:department/id] satırını ekledikten sonra ikinci hataya dönüştü. Satırı aşağıdaki linkten dolayı ekledim
+
+;q1: [soru linki](https://forum.datomic.com/t/troubles-with-upsert-on-composite-tuples/1355/6)
+
+
+(get-in db2 [:student :id])
