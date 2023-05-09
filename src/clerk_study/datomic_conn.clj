@@ -41,4 +41,30 @@
   datodb)
 ;=> [[87960930222159]]
 
+(def deparment_id (ffirst (d/q
+                            '[:find ?e
+                              :where
+                              [?e :title "Sosyoloji"]
+                              ]
+                            datodb)))
+
+(identity deparment_id)
+;=> 87960930222159
+
+#_(d/q
+  '[:find (pull deparment_id [*])
+    :where
+    [?e :title "Sosyoloji"]
+    [?e :id 103]
+    ]
+  datodb)
+
+
+(d/q
+  '[:find ?e
+    :where
+    [_ :title ?e]
+    ]
+  datodb)
+;=> [["Fizik"] ["Sosyoloji"] ["Matematik"]]
 
