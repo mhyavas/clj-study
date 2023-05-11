@@ -178,4 +178,3 @@
 (clerk/table ct2)
 
 
-

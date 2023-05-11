@@ -1,4 +1,5 @@
-(ns clerk-study.datomic-conn)
+(ns clerk-study.datomic-conn
+  (:require [nextjournal.clerk :as clerk]))
 
 (require '[datomic.client.api :as d])
 
@@ -68,3 +69,81 @@
   datodb)
 ;=> [["Fizik"] ["Sosyoloji"] ["Matematik"]]
 
+(d/q
+  '[:find ?e
+    :where
+    [_ :id ?e]] datodb)
+;=> [[101] [102] [103]]
+
+(d/q
+  '[:find ?a
+    :where
+    [?e :title "Matematik"]
+    [?e ?a _]] datodb)
+;=> [[73] [76]]
+
+(d/q
+  '[:find ?aname
+    :where
+    [?e :title "Matematik"]
+    [?e ?a _]
+    [?a :db/ident ?aname]] datodb)
+;=> [[:title] [:id]]
+
+(defn q [k db]
+  (d/q
+    '[:find ?e
+      :where
+      [_ k ?e]] db)
+  )
+;q1: Yukarıdaki fonksiyonda simulasyon için genel bir fonksiyon tanımlamak istedim ama query fonksiyonu 'k' inputunu kabul etmiyor.
+{::clerk/visibility {:code :hide}}
+(comment
+  ;; multi-arity version
+  (d/q  '[:find ?name ?duration
+          :where [?e :artist/name "The Beatles"]
+          [?track :track/artists ?e]
+          [?track :track/name ?name]
+          [?track :track/duration ?duration]]
+        db)
+  ;rfr: https://docs.datomic.com/cloud/query/query-data-reference.html
+  )
+
+(def t1 {:id (d/q
+               '[:find ?e
+                 :where
+                 [_ :id ?e]] datodb)
+         :title (d/q
+                  '[:find ?e
+                    :where
+                    [_ :title ?e]] datodb)})
+
+{::clerk/visibility {:code :hide}}
+(comment
+
+  (identity t1) ;=> {:id [[101] [102] [103]], :title [["Fizik"] ["Sosyoloji"] ["Matematik"]]}
+
+
+  (defn f1 [v]
+    (apply concat v))
+
+  {::clerk/visibility {:code :hide}}
+  (f1 (t1 :id)) ;=> (101 102 103)
+
+
+  (defn f2 [v]
+    (into [] (apply concat v)))
+
+  (f2 (t1 :id)) ;=> [101 102 103]
+
+  ;end
+,)
+
+{::clerk/visibility {:code :hide}}
+(defn f2 [v]
+  (into [] (apply concat v)))
+(def t2 {:id (f2 (t1 :id)) :title (f2 (t1 :title))})
+
+{::clerk/visibility {:code :hide}}
+(identity t2) ;=> {:id [101 102 103], :title ["Fizik" "Sosyoloji" "Matematik"]}
+(clerk/table t2)
