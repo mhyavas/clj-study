@@ -31,7 +31,7 @@
 ;q1: Burda departman ile course arasinda baglatiyi kuramadim. Keywordler karisiyor.
 
 (def schema-course
-  [{:db/ident :id
+  [{:db/ident :course/id
     :db/valueType :db.type/long
     :db/unique :db.unique/identity
     :db/cardinality :db.cardinality/one}
@@ -41,7 +41,7 @@
    {:db/ident :name
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
-   {:db/ident :department/id
+   {:db/ident :course/department
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one}
    ])

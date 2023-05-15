@@ -45,7 +45,7 @@
                    (update-in [:name] conj (form3 :name))
                    (update-in [:department/id] conj (form3 :department/id))
                    ))
-
+  ;Assoc-in
   (identity record3)
   ;=> {:id [1 2 3], :name ["Can Ali" "Ali Deniz" "Mahmut Can"], :department/id [101 102 103]}
 

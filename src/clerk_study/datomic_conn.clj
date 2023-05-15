@@ -96,6 +96,8 @@
       :where
       [_ k ?e]] db)
   )
+
+#_(q :id datodb)
 ;q1: Yukarıdaki fonksiyonda simulasyon için genel bir fonksiyon tanımlamak istedim ama query fonksiyonu 'k' inputunu kabul etmiyor.
 {::clerk/visibility {:code :hide}}
 (comment

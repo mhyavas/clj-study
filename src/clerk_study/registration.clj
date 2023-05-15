@@ -10,9 +10,9 @@
                        :storage-dir :mem
                        :system "ci"}))
 
-(d/create-database client {:db-name "db2"})
+#_(d/create-database client {:db-name "db2"})
 
-(def conn (d/connect client {:db-name "db2"}))
+#_(def conn (d/connect client {:db-name "db2"}))
 ^{::clerk/visibility {:code :hide}}
 (def schema-1
   [{:db/ident :id
@@ -69,7 +69,7 @@
 (clerk/table record1)
 #_(let [id (form1 :id)
       name (form1 :name)
-      did (form1 :department/id)] (assoc-in st :id id :name name :department/id did))
+      did (form1 :department/id)] (assoc-in st {:id id :name name :department/id did}))
 (def record2 (-> record1
      (update-in [:id] conj (form2 :id))
      (update-in [:name] conj (form2 :name))
