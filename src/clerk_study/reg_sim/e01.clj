@@ -26,15 +26,6 @@
                3 {:id 3 :name "Mahmut Can" :department/id [[:id 300 :title "Sosyoloji"]]}})
 
 
-(def schema-department
-  [{:db/ident :id
-    :db/valueType :db.type/long
-    :db/unique :db.unique/identity
-    :db/cardinality :db.cardinality/one}
-   {:db/ident :title
-    :db/valueType :db.type/string
-    :db/cardinality :db.cardinality/one}
-   ])
 
 (comment
   ;Departments mapini datomic'e aktarmak icin obje tanimlamasi:
@@ -67,17 +58,18 @@
   ;=> "deparment/id"
 
   (defn f3 [m]
-    (map #(str "deparment/" %) (map name (keys m)))
+    (map #(keyword (str "deparment/" %)) (map name (keys m)))
     #_(str "department/" (name (first xs)))
     )
+
   (map f3 (vals departments))
-  ;=> (("deparment/id" "deparment/title")
-  ; ("deparment/id" "deparment/title")
-  ; ("deparment/id" "deparment/title"))
+  ;=> ((:deparment/id :deparment/title)
+  ; (:deparment/id :deparment/title)
+  ; (:deparment/id :deparment/title))
 
-  (str/join (cons "deparment/" (name (keys {:id 1 :title 2}))))
+  #_(str/join (cons "deparment/" (name (keys {:id 1 :title 2}))))
 
-  (keyword (str/join "department" (walk/stringify-keys (keys (first (vals departments))))))
+  #_(keyword (str/join "department" (walk/stringify-keys (keys (first (vals departments))))))
 
 
   ;end
@@ -95,7 +87,206 @@
     :db/valueType :db.type/string
     :db/unique :db.unique/identity
     :db/cardinality :db.cardinality/one}
-   {:db/ident :department/id
+   {:db/ident :course/department
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/many}
    ])
+
+(def schema-department
+  [{:db/ident :department/id
+    :db/valueType :db.type/long
+    :db/unique :db.unique/identity
+    :db/cardinality :db.cardinality/one}
+   {:db/ident :department/title
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one}
+   ])
+
+(d/transact conn {:tx-data schema-department})
+;=>
+;{:db-before #datomic.core.db.Db{:id "b4215088-db3a-4479-9d58-8ac6d400ac4e",
+;                                :basisT 5,
+;                                :indexBasisT 0,
+;                                :index-root-id nil,
+;                                :asOfT nil,
+;                                :sinceT nil,
+;                                :raw nil},
+; :db-after #datomic.core.db.Db{:id "b4215088-db3a-4479-9d58-8ac6d400ac4e",
+;                               :basisT 6,
+;                               :indexBasisT 0,
+;                               :index-root-id nil,
+;                               :asOfT nil,
+;                               :sinceT nil,
+;                               :raw nil},
+; :tx-data [#datom[13194139533318 50 #inst"2023-05-16T09:54:41.756-00:00" 13194139533318 true]
+;           #datom[73 10 :department/id 13194139533318 true]
+;           #datom[73 40 22 13194139533318 true]
+;           #datom[73 42 38 13194139533318 true]
+;           #datom[73 41 35 13194139533318 true]
+;           #datom[74 10 :department/title 13194139533318 true]
+;           #datom[74 40 23 13194139533318 true]
+;           #datom[74 41 35 13194139533318 true]
+;           #datom[0 13 73 13194139533318 true]
+;           #datom[0 13 74 13194139533318 true]],
+; :tempids {}}
+
+(defn f3 [m]
+  (map #(keyword (str "department/" %)) (map name (keys m)))
+  )
+
+(map f3 (vals departments))
+;=> ((:deparment/id :deparment/title) (:deparment/id :deparment/title) (:deparment/id :deparment/title))
+
+
+(map vals (vals departments))
+;=> ((100 "Matematik") (200 "Fizik") (300 "Sosyoloji"))
+
+
+(map interleave (map f3 (vals departments)) (map vals (vals departments)))
+;=>
+;((:deparment/id 100 :deparment/title "Matematik")
+; (:deparment/id 200 :deparment/title "Fizik")
+; (:deparment/id 300 :deparment/title "Sosyoloji"))
+
+(into [] (map interleave (map f3 (vals departments)) (map vals (vals departments))))
+;=>
+;[(:deparment/id 100 :deparment/title "Matematik")
+; (:deparment/id 200 :deparment/title "Fizik")
+; (:deparment/id 300 :deparment/title "Sosyoloji")]
+
+(def department_data1 (into [] (map interleave (map f3 (vals departments)) (map vals (vals departments)))) )
+
+
+(hash-map (:deparment/id 100 :deparment/title "Matematik"))
+
+(into {} (first department_data1))
+;Don't know how to create ISeq from: clojure.lang.Keyword
+
+(defn f4 [m]
+  (map #(str "department/" %) (map name (keys m)))
+  )
+(map f4 (vals departments))
+
+(map interleave (map f4 (vals departments)) (map vals (vals departments)))
+;=>
+;(("deparment/id" 100 "deparment/title" "Matematik")
+; ("deparment/id" 200 "deparment/title" "Fizik")
+; ("deparment/id" 300 "deparment/title" "Sosyoloji"))
+
+(def dept_data2 (into [] (map interleave (map f4 (vals departments)) (map vals (vals departments)))))
+;=>
+;[("deparment/id" 100 "deparment/title" "Matematik")
+; ("deparment/id" 200 "deparment/title" "Fizik")
+; ("deparment/id" 300 "deparment/title" "Sosyoloji")]
+(into [] (apply hash-map (first department_data1)))
+;=> [[:deparment/title "Matematik"] [:deparment/id 100]]
+
+(def build-map (partial assoc {}))
+
+(apply build-map (first department_data1))
+;=> #:deparment{:id 100, :title "Matematik"}
+
+(apply hash-map (first dept_data2))
+;=> {"deparment/title" "Matematik", "deparment/id" 100}
+
+(defn f5 [[k v]]
+  (let [k1 (keyword k)
+        v1 v]
+    (into {} {k1 v1})))
+
+(defn f7 [m]
+  (into {} m))
+(map f5 (apply hash-map (first dept_data2)))
+;=> (#:deparment{:title "Matematik"} #:deparment{:id 100})
+
+(f7 (map f5 (apply hash-map (first dept_data2))))
+;=> #:department{:id 100, :title "Matematik"}
+(map #(map f5 (apply hash-map %)) dept_data2)
+;=>
+;((#:deparment{:title "Matematik"} #:deparment{:id 100})
+; (#:deparment{:title "Fizik"} #:deparment{:id 200})
+; (#:deparment{:title "Sosyoloji"} #:deparment{:id 300}))
+
+(map #(f7 (map f5 (apply hash-map %))) dept_data2)
+;=>
+;(#:department{:id 100, :title "Matematik"}
+; #:department{:id 200, :title "Fizik"}
+; #:department{:id 300, :title "Sosyoloji"})
+
+(into [] (map #(f7 (map f5 (apply hash-map %))) dept_data2))
+;=>
+;[#:department{:id 100, :title "Matematik"}
+; #:department{:id 200, :title "Fizik"}
+; #:department{:id 300, :title "Sosyoloji"}]
+
+
+(d/transact conn {:tx-data (map #(map f5 (apply hash-map %) ) dept_data2)})
+;Execution error (ExceptionInfo) at datomic.core.error/raise (error.clj:55).
+;:db.error/not-a-data-function Unable to resolve data function: #:department{:id 100}
+
+
+(d/transact conn {:tx-data (into [] (map #(f7 (map f5 (apply hash-map %))) dept_data2))})
+;=>
+;{:db-before #datomic.core.db.Db{:id "b4215088-db3a-4479-9d58-8ac6d400ac4e",
+;                                :basisT 7,
+;                                :indexBasisT 0,
+;                                :index-root-id nil,
+;                                :asOfT nil,
+;                                :sinceT nil,
+;                                :raw nil},
+; :db-after #datomic.core.db.Db{:id "b4215088-db3a-4479-9d58-8ac6d400ac4e",
+;                               :basisT 8,
+;                               :indexBasisT 0,
+;                               :index-root-id nil,
+;                               :asOfT nil,
+;                               :sinceT nil,
+;                               :raw nil},
+; :tx-data [#datom[13194139533320 50 #inst"2023-05-16T12:20:57.780-00:00" 13194139533320 true]
+;           #datom[92358976733259 73 100 13194139533320 true]
+;           #datom[92358976733259 74 "Matematik" 13194139533320 true]
+;           #datom[92358976733260 73 200 13194139533320 true]
+;           #datom[92358976733260 74 "Fizik" 13194139533320 true]
+;           #datom[92358976733261 73 300 13194139533320 true]
+;           #datom[92358976733261 74 "Sosyoloji" 13194139533320 true]],
+; :tempids {}}
+
+
+
+(d/transact conn {:tx-data schema-course})
+;=>
+;{:db-before #datomic.core.db.Db{:id "b4215088-db3a-4479-9d58-8ac6d400ac4e",
+;                                :basisT 8,
+;                                :indexBasisT 0,
+;                                :index-root-id nil,
+;                                :asOfT nil,
+;                                :sinceT nil,
+;                                :raw nil},
+; :db-after #datomic.core.db.Db{:id "b4215088-db3a-4479-9d58-8ac6d400ac4e",
+;                               :basisT 9,
+;                               :indexBasisT 0,
+;                               :index-root-id nil,
+;                               :asOfT nil,
+;                               :sinceT nil,
+;                               :raw nil},
+; :tx-data [#datom[13194139533321 50 #inst"2023-05-16T12:23:13.915-00:00" 13194139533321 true]
+;           #datom[75 10 :course/id 13194139533321 true]
+;           #datom[75 40 22 13194139533321 true]
+;           #datom[75 42 38 13194139533321 true]
+;           #datom[75 41 35 13194139533321 true]
+;           #datom[76 10 :course/code 13194139533321 true]
+;           #datom[76 40 23 13194139533321 true]
+;           #datom[76 42 38 13194139533321 true]
+;           #datom[76 41 35 13194139533321 true]
+;           #datom[77 10 :course/name 13194139533321 true]
+;           #datom[77 40 23 13194139533321 true]
+;           #datom[77 42 38 13194139533321 true]
+;           #datom[77 41 35 13194139533321 true]
+;           #datom[78 10 :course/department 13194139533321 true]
+;           #datom[78 40 20 13194139533321 true]
+;           #datom[78 41 36 13194139533321 true]
+;           #datom[0 13 75 13194139533321 true]
+;           #datom[0 13 76 13194139533321 true]
+;           #datom[0 13 77 13194139533321 true]
+;           #datom[0 13 78 13194139533321 true]],
+; :tempids {}}
+
