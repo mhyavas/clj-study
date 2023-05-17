@@ -29,8 +29,9 @@
   (identity record1)
   ;=> {:id [nil], :name ["Can Ali"], :department/id [101]}
 
+  (def test1 (assoc-in {} [] form1))
+
   (apply inc (record1 :id))
-  ;=> 2
   (def record2 (-> record1
                (update-in [:id] conj (apply inc (record1 :id)))
                (update-in [:name] conj (form2 :name))

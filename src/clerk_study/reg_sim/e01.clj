@@ -1,5 +1,7 @@
 (ns clerk-study.reg-sim.e01)
 
+;Tarih: 20230515
+
 (require '[clojure.string :as str])
 (require '[clojure.walk :as walk])
 (require '[datomic.client.api :as d])
@@ -15,8 +17,8 @@
 (def conn (d/connect client {:db-name "db5"}))
 
 
-(def courses {101 {:id 101 :code "MAT101" :name "Matematik" :department/id [100 200]}
-              201 {:id 201 :code "BIL101" :name "Matlab Giriş" :department/id [200]}})
+(def courses {101 {:id 101 :code "MAT101" :name "Matematik" :department [100 200]}
+              201 {:id 201 :code "BIL101" :name "Matlab Giriş" :department [200]}})
 
 (def departments {100 {:id 100 :title "Matematik"}
                   200 {:id 200 :title "Fizik"}
@@ -289,4 +291,49 @@
 ;           #datom[0 13 77 13194139533321 true]
 ;           #datom[0 13 78 13194139533321 true]],
 ; :tempids {}}
+
+(defn f8 [m]
+  (map #(str "course/" %) (map name (keys m)))
+  )
+(into [] (map interleave (map f8 (vals courses)) (map vals (vals courses))))
+;=>
+;[("course/id" 101 "course/code" "MAT101" "course/name" "Matematik" "course/department" [100 200])
+; ("course/id" 201 "course/code" "BIL101" "course/name" "Matlab Giriş" "course/department" [200])]
+(def course_data2 (into [] (map interleave (map f8 (vals courses)) (map vals (vals courses)))))
+(into [] (map #(f7 (map f5 (apply hash-map %))) course_data2))
+;=>
+;[#:course{:department [100 200], :id 101, :name "Matematik", :code "MAT101"}
+; #:course{:department [200], :id 201, :name "Matlab Giriş", :code "BIL101"}]
+
+
+(d/transact conn {:tx-data (into [] (map #(f7 (map f5 (apply hash-map %))) course_data2))})
+;=>
+;{:db-before #datomic.core.db.Db{:id "b4215088-db3a-4479-9d58-8ac6d400ac4e",
+;                                :basisT 10,
+;                                :indexBasisT 0,
+;                                :index-root-id nil,
+;                                :asOfT nil,
+;                                :sinceT nil,
+;                                :raw nil},
+; :db-after #datomic.core.db.Db{:id "b4215088-db3a-4479-9d58-8ac6d400ac4e",
+;                               :basisT 11,
+;                               :indexBasisT 0,
+;                               :index-root-id nil,
+;                               :asOfT nil,
+;                               :sinceT nil,
+;                               :raw nil},
+; :tx-data [#datom[13194139533323 50 #inst"2023-05-17T08:02:49.447-00:00" 13194139533323 true]
+;           #datom[92358976733263 78 100 13194139533323 true]
+;           #datom[92358976733263 78 200 13194139533323 true]
+;           #datom[92358976733263 75 101 13194139533323 true]
+;           #datom[92358976733263 77 "Matematik" 13194139533323 true]
+;           #datom[92358976733263 76 "MAT101" 13194139533323 true]
+;           #datom[92358976733264 78 200 13194139533323 true]
+;           #datom[92358976733264 75 201 13194139533323 true]
+;           #datom[92358976733264 77 "Matlab Giriş" 13194139533323 true]
+;           #datom[92358976733264 76 "BIL101" 13194139533323 true]],
+; :tempids {}}
+
+
+
 
