@@ -124,4 +124,3 @@
                  (update-in [:department/id] conj (map f1 (form3 :department/id))) ))
 
 (clerk/table record6)
-

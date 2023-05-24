@@ -88,7 +88,8 @@
 (into [] #(% :department/id) departments)
 (map #(assoc-in dt [:id] (% :department/id)) departments)
 ;=> ({:id 100, :title []} {:id 200, :title []} {:id 300, :title []})
-(-> dt
+#_(-> dt
     (map #(assoc-in (% :department/id)) departments))
-    (assoc-in [:title] (departments :title)))
-(clerk/table departments)
+#_(assoc-in [:title] (departments :title))
+#_(clerk/table departments)
+
