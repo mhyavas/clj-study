@@ -92,4 +92,15 @@
     (map #(assoc-in (% :department/id)) departments))
 #_(assoc-in [:title] (departments :title))
 #_(clerk/table departments)
+(group-by :id (map #(assoc-in dt [:id] (% :department/id)) departments))
+;=> {100 [{:id 100, :title []}], 200 [{:id 200, :title []}], 300 [{:id 300, :title []}]}
 
+(into [] (map #(assoc-in dt [:id] (% :department/id)) departments))
+;=> [{:id 100, :title []} {:id 200, :title []} {:id 300, :title []}]
+
+
+(apply concat (into [] (map #(assoc-in dt [:id] (% :department/id)) departments)))
+;=> ([:id 100] [:title []] [:id 200] [:title []] [:id 300] [:title []])
+
+
+(-> )
