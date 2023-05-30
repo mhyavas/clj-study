@@ -1,10 +1,12 @@
-(ns user)
+(ns user
+  (:require [portal.api :as p]))
 
 (require '[nextjournal.clerk :as clerk])
 
 ;; start Clerk's built-in webserver on the default port 7777, opening the browser when done
 (clerk/serve! {:browse? true})
-
+(def portal (p/open))
+(p/tap)
 (clerk/show! "src/clerk_study/n1.clj")
 #_(clerk/show! "src/clerk_study/registration.clj")
 ;; or let Clerk watch the given `:paths` for changes
